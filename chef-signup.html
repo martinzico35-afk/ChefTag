@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chef Sign Up | ChefTag</title>
+  <meta name="description" content="Join ChefTag as a private chef. Get matched with clients for dinners, events, and tasting menus across Nigeria.">
+  <meta property="og:title" content="Chef Sign Up | ChefTag">
+  <meta property="og:description" content="Apply to become a ChefTag chef and start receiving booking inquiries.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="icon" type="image/png" sizes="16x16" >
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .signup-page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .signup-page .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 28px;
+      font-weight: 750;
+      color: var(--basil);
+      font-size: 0.92rem;
+    }
+
+    .signup-page .back-link:hover {
+      color: var(--tomato);
+    }
+
+    .signup-page h1 {
+      max-width: 16ch;
+      font-size: 2.4rem;
+      margin-bottom: 8px;
+    }
+
+    .signup-page .lede {
+      margin-bottom: 32px;
+      max-width: 50ch;
+    }
+
+    .form-section {
+      margin-bottom: 28px;
+    }
+
+    .form-section h3 {
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--line);
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 0;
+    }
+
+    .form-field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 16px;
+      color: #33413c;
+      font-size: 0.82rem;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--ink);
+      font-size: 0.95rem;
+      font-weight: 500;
+      box-shadow: 0 8px 20px rgba(26, 37, 33, 0.05);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-field textarea {
+      min-height: 90px;
+      padding: 12px 14px;
+      resize: vertical;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      border-color: var(--basil);
+      outline: 3px solid rgba(46, 107, 79, 0.16);
+      box-shadow: 0 8px 20px rgba(26, 37, 33, 0.08);
+    }
+
+    .form-field input::placeholder,
+    .form-field textarea::placeholder {
+      color: #a3aea8;
+      font-weight: 400;
+    }
+
+    .form-field .hint {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .cuisine-checks,
+    .event-checks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .cuisine-checks label,
+    .event-checks label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 40px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      color: #35413d;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .cuisine-checks label:hover,
+    .event-checks label:hover {
+      border-color: var(--basil);
+    }
+
+    .cuisine-checks input,
+    .event-checks input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--basil);
+    }
+
+
+    .submit-section {
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 2px solid var(--line);
+    }
+
+    .submit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--white);
+      font-weight: 900;
+      font-size: 1rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .submit-btn:hover {
+      background: var(--basil);
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .form-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      max-width: 48ch;
+    }
+
+    .form-note strong {
+      color: var(--basil);
+    }
+
+    /* Status messages */
+    .status-msg {
+      display: none;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 24px;
+    }
+
+    .status-msg.success {
+      display: block;
+      background: rgba(46, 107, 79, 0.1);
+      border: 1px solid var(--basil);
+      color: var(--basil);
+    }
+
+    .status-msg.error {
+      display: block;
+      background: rgba(232, 93, 61, 0.1);
+      border: 1px solid var(--tomato);
+      color: var(--tomato);
+    }
+
+    /* Photo Upload */
+    .photo-upload-zone {
+      position: relative;
+      min-height: 160px;
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      background: #faf9f5;
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .photo-upload-zone:hover,
+    .photo-upload-zone.dragover {
+      border-color: var(--basil);
+      background: rgba(46, 107, 79, 0.04);
+    }
+
+    .photo-upload-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .photo-upload-placeholder svg {
+      color: var(--steel);
+    }
+
+    .photo-upload-placeholder p {
+      margin: 0;
+      font-weight: 750;
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+
+    .photo-upload-placeholder span {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .photo-preview {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .photo-upload-zone .upload-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--basil);
+      color: var(--white);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    @media (max-width: 640px) {
+      .signup-page { padding: 24px 16px 60px; }
+      .signup-page h1 { font-size: 1.9rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .cuisine-checks, .event-checks { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" aria-label="Primary">
+    <div class="header-left">
+      <a class="brand" href="index.html" aria-label="ChefTag home">
+        <img class="brand-logo" src="assets/cheftag-logo.png" alt="ChefTag" width="36" height="36">
+        <span>ChefTag</span>
+      </a>
+    </div>
+    <nav class="nav-links" aria-label="Site">
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main class="signup-page">
+    <a href="index.html" class="back-link">&larr; Back to ChefTag</a>
+
+    <p class="eyebrow">Join the Kitchen</p>
+    <h1>Become a ChefTag Chef</h1>
+    <p class="lede">Fill in your profile below. Our team will review your application and verify you before you appear on the platform.</p>
+
+    <div id="statusMsg" class="status-msg" role="alert" aria-live="polite"></div>
+
+    <form id="chefSignupForm" novalidate>
+      <!-- Personal Info -->
+      <div class="form-section">
+        <h3>Personal Information</h3>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="chefName">Full Name</label>
+            <input type="text" id="chefName" name="name" placeholder="e.g. Chef Amara Oke" required>
+          </div>
+          <div class="form-field">
+            <label for="chefEmail">Email Address</label>
+            <input type="email" id="chefEmail" name="email" placeholder="you@example.com" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="chefPhone">Phone Number</label>
+            <input type="tel" id="chefPhone" name="phone" placeholder="+234 801 000 0000">
+          </div>
+          <div class="form-field">
+            <label for="chefPassword">Password <span class="hint">(Min 6 characters, for secure inbox access)</span></label>
+            <input type="password" id="chefPassword" name="password" placeholder="Create a password" required minlength="6">
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="chefLocation">City</label>
+          <select id="chefLocation" name="location" required>
+            <option value="" disabled selected>Select your city</option>
+            <optgroup label="Lagos">
+              <option value="Lagos">Lagos (Mainland)</option>
+              <option value="Lagos Island">Lagos Island</option>
+            </optgroup>
+            <optgroup label="Major Cities">
+              <option value="Abuja">Abuja</option>
+              <option value="Port Harcourt">Port Harcourt</option>
+              <option value="Benin City">Benin City</option>
+              <option value="Ibadan">Ibadan</option>
+              <option value="Kano">Kano</option>
+              <option value="Enugu">Enugu</option>
+              <option value="Calabar">Calabar</option>
+              <option value="Owerri">Owerri</option>
+              <option value="Uyo">Uyo</option>
+              <option value="Aba">Aba</option>
+              <option value="Jos">Jos</option>
+              <option value="Kaduna">Kaduna</option>
+            </optgroup>
+            <optgroup label="Other States">
+              <option value="Akw Ibom">Akwa Ibom</option>
+              <option value="Delta">Delta (Asaba / Warri)</option>
+              <option value="Edo">Edo</option>
+              <option value="Ogun">Ogun</option>
+              <option value="Ondo">Ondo</option>
+              <option value="Ekiti">Ekiti</option>
+              <option value="Osun">Osun</option>
+              <option value="Oyo">Oyo</option>
+              <option value="Kwara">Kwara</option>
+              <option value="Niger">Niger (Minna)</option>
+              <option value="Plateau">Plateau</option>
+              <option value="Rivers">Rivers</option>
+              <option value="Cross River">Cross River</option>
+              <option value="Imo">Imo</option>
+              <option value="Anambra">Anambra (Onitsha / Awka)</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      <!-- Professional Info -->
+      <div class="form-section">
+        <h3>Professional Details</h3>
+        <div class="form-field">
+          <label for="chefImageUpload">Profile Photo</label>
+          <div class="photo-upload-zone" id="photoUploadZone">
+            <div class="photo-upload-placeholder" id="photoPlaceholder">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <p>Click or drag a photo here</p>
+              <span>JPG, PNG up to 5MB</span>
+            </div>
+            <img id="photoPreview" class="photo-preview" style="display:none;" alt="Preview">
+            <input type="file" id="chefImageUpload" accept="image/jpeg,image/png,image/webp" style="display:none;">
+          </div>
+          <span class="hint">A clear, professional photo of you or your cooking</span>
+        </div>
+        <div class="form-field">
+          <label for="chefSpecialty">Specialty / Bio</label>
+          <textarea id="chefSpecialty" name="specialty" placeholder="Describe your cooking style, signature dishes, and what makes you unique..." required></textarea>
+        </div>
+      </div>
+
+      <!-- Cuisine & Events -->
+      <div class="form-section">
+        <h3>Cuisines You Offer</h3>
+        <div class="cuisine-checks" id="cuisineChecks">
+          <label><input type="checkbox" value="afrofusion"> Afro-fusion</label>
+          <label><input type="checkbox" value="continental"> Continental</label>
+          <label><input type="checkbox" value="italian"> Italian</label>
+          <label><input type="checkbox" value="vegan"> Vegan</label>
+          <label><input type="checkbox" value="grill"> Grill / BBQ</label>
+          <label><input type="checkbox" value="dessert"> Dessert / Pastry</label>
+          <label><input type="checkbox" value="chinese"> Chinese</label>
+          <label><input type="checkbox" value="indian"> Indian</label>
+          <label id="otherCuisineLabel"><input type="checkbox" value="others" id="otherCuisineCheck"> Others</label>
+        </div>
+        <div class="form-field" id="otherCuisineField" style="display:none; margin-top:12px;">
+          <label for="otherCuisineText">Describe your cuisine</label>
+          <textarea id="otherCuisineText" placeholder="e.g. Mediterranean, Thai, Japanese, Intercontinental, traditional Nigerian dishes like ofada, ewa-agoyin, suya..." rows="2"></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Event Types You Handle</h3>
+        <div class="event-checks" id="eventChecks">
+          <label><input type="checkbox" value="private dinner"> Private Dinner</label>
+          <label><input type="checkbox" value="birthday"> Birthday</label>
+          <label><input type="checkbox" value="anniversary"> Anniversary</label>
+          <label><input type="checkbox" value="brunch"> Brunch</label>
+          <label><input type="checkbox" value="events"> Events</label>
+          <label><input type="checkbox" value="corporate"> Corporate</label>
+          <label><input type="checkbox" value="meal prep"> Meal Prep</label>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="submit-section">
+        <button type="submit" class="submit-btn" id="submitBtn">Submit Application</button>
+        <p class="form-note"><strong>Note:</strong> Your profile will be reviewed by our team. Once verified and approved, you'll appear on ChefTag with a verified badge.</p>
+      </div>
+    </form>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>&copy; 2025 ChefTag. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="auth-check.js"></script>
+  <script src="chef-signup.js"></script>
+
+</body>
+</html>

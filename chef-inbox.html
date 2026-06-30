@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chef Inbox | ChefTag</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" >
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .inbox-page { display: flex; flex-direction: column; height: calc(100vh - 71px); }
+
+    /* Chef Login */
+    .chef-login {
+      display: flex; align-items: center; justify-content: center; flex: 1; padding: 24px;
+    }
+    .chef-login-box {
+      max-width: 400px; width: 100%; padding: 36px; border: 1px solid var(--line);
+      border-radius: 12px; background: var(--white); box-shadow: var(--shadow); text-align: center;
+    }
+    .chef-login-box h2 { margin-bottom: 4px; font-size: 1.35rem; }
+    .chef-login-box .login-sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 20px; }
+    .chef-login-box .field { margin-bottom: 14px; text-align: left; }
+    .chef-login-box .field input {
+      width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid var(--line);
+      border-radius: 8px; background: var(--white); color: var(--ink); font-size: 0.95rem;
+      box-shadow: 0 8px 20px rgba(26,37,33,0.05); transition: border-color 0.2s;
+    }
+    .chef-login-box .field input:focus { border-color: var(--basil); outline: 3px solid rgba(46,107,79,0.16); }
+    .chef-login-box .field input::placeholder { color: #a3aea8; font-weight: 400; }
+    .chef-login-box .login-error { color: var(--tomato); font-size: 0.85rem; font-weight: 700; margin-bottom: 12px; display: none; }
+    .chef-login-box .login-btn {
+      width: 100%; padding: 14px; border: 0; border-radius: 8px; background: var(--ink);
+      color: var(--white); font-weight: 900; font-size: 1rem; cursor: pointer; transition: background 0.2s;
+    }
+    .chef-login-box .login-btn:hover { background: var(--basil); }
+
+    /* Inbox Layout */
+    .inbox-container { display: none; flex: 1; overflow: hidden; }
+    .inbox-layout { display: flex; flex: 1; overflow: hidden; }
+
+    /* Sidebar */
+    .inbox-sidebar {
+      width: 340px; flex-shrink: 0; border-right: 1px solid var(--line);
+      background: var(--white); display: flex; flex-direction: column; overflow: hidden;
+    }
+    .inbox-sidebar-header {
+      padding: 18px 18px 14px; border-bottom: 1px solid var(--line);
+    }
+    .inbox-sidebar-header h2 { font-size: 1.15rem; margin-bottom: 0; }
+    .inbox-sidebar-header .inbox-count { color: var(--muted); font-size: 0.82rem; font-weight: 700; }
+    .inbox-list { flex: 1; overflow-y: auto; list-style: none; margin: 0; padding: 0; }
+    .inbox-list::-webkit-scrollbar { width: 4px; }
+    .inbox-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+    .conv-item {
+      display: flex; gap: 12px; padding: 14px 18px; cursor: pointer;
+      border-bottom: 1px solid rgba(232,229,217,0.6); transition: background 0.15s;
+    }
+    .conv-item:hover { background: #f9f8f3; }
+    .conv-item.active { background: rgba(46,107,79,0.06); border-left: 3px solid var(--basil); }
+    .conv-item .conv-avatar {
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      display: grid; place-items: center; background: var(--basil); color: var(--white);
+      font-weight: 900; font-size: 0.95rem; text-transform: uppercase;
+    }
+    .conv-item .conv-info { flex: 1; min-width: 0; }
+    .conv-item .conv-name { font-weight: 800; font-size: 0.92rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .conv-item .conv-preview { color: var(--muted); font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .conv-item .conv-time { color: var(--muted); font-size: 0.72rem; font-weight: 700; }
+    .conv-item .conv-unread {
+      display: inline-block; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
+      background: var(--tomato); color: var(--white); font-size: 0.7rem; font-weight: 900;
+      text-align: center; line-height: 18px; flex-shrink: 0; align-self: center;
+    }
+
+    .inbox-empty-list {
+      padding: 40px 20px; text-align: center; color: var(--muted);
+    }
+    .inbox-empty-list svg { margin-bottom: 12px; color: var(--line); }
+    .inbox-empty-list h3 { color: var(--ink); margin-bottom: 6px; font-size: 1rem; }
+
+    /* Chat Panel (same styles as client chat) */
+    .inbox-chat-panel { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+    .inbox-chat-panel.open { display: flex; }
+
+    .inbox-chat-header {
+      display: flex; align-items: center; gap: 14px; padding: 14px 20px;
+      border-bottom: 1px solid var(--line); background: var(--white);
+    }
+    .inbox-chat-header .back-to-list {
+      display: none; align-items: center; gap: 6px; font-weight: 750; color: var(--basil); font-size: 0.88rem;
+      cursor: pointer; border: 0; background: none; padding: 0;
+    }
+    .inbox-chat-header .inbox-chat-info { flex: 1; }
+    .inbox-chat-header .inbox-chat-info h3 { font-size: 1.05rem; margin-bottom: 0; }
+    .inbox-chat-header .inbox-chat-info span { color: var(--muted); font-size: 0.82rem; font-weight: 700; }
+
+    .inbox-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(180deg, #f9f8f3 0%, #f4f2eb 100%); }
+    .inbox-messages::-webkit-scrollbar { width: 6px; }
+    .inbox-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+    .inbox-bubble-wrap { display: flex; flex-direction: column; max-width: 72%; }
+    .inbox-bubble-wrap.chef { align-self: flex-end; align-items: flex-end; }
+    .inbox-bubble-wrap.client { align-self: flex-start; align-items: flex-start; }
+    .inbox-bubble-wrap .chat-sender-name { font-size: 0.76rem; font-weight: 800; color: var(--muted); margin-bottom: 4px; padding: 0 4px; }
+    .inbox-bubble {
+      padding: 12px 16px; border-radius: 16px; font-size: 0.94rem; line-height: 1.5; word-wrap: break-word;
+    }
+    .inbox-bubble.chef {
+      background: var(--ink); color: var(--white); border-bottom-right-radius: 4px;
+    }
+    .inbox-bubble.client {
+      background: var(--white); color: var(--ink); border-bottom-left-radius: 4px;
+      border: 1px solid var(--line); box-shadow: 0 2px 8px rgba(26,37,33,0.06);
+    }
+    .inbox-bubble-wrap .chat-time { display: block; font-size: 0.7rem; color: var(--muted); margin-top: 4px; padding: 0 4px; }
+    .inbox-bubble-wrap.chef .chat-time { color: rgba(255,255,255,0.6); text-align: right; }
+
+    .inbox-read-receipt {
+      display: inline-block; font-size: 0.65rem; margin-left: 4px; font-weight: 800;
+      color: rgba(255,255,255,0.5); letter-spacing: -1px;
+    }
+    .inbox-read-receipt.read { color: #4fc3f7; }
+
+    /* Inbox typing indicator */
+    .inbox-typing {
+      display: none; align-self: flex-start; padding: 12px 16px; background: var(--white);
+      border: 1px solid var(--line); border-radius: 16px; border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 8px rgba(26,37,33,0.06);
+    }
+    .inbox-typing-dots { display: flex; gap: 4px; }
+    .inbox-typing-dots span {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--muted); opacity: 0.5;
+      animation: inboxTypingBounce 1.4s infinite ease-in-out;
+    }
+    .inbox-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .inbox-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes inboxTypingBounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+
+    /* Unread conversation highlight */
+    .conv-item.conv-unread-highlight {
+      background: rgba(46,107,79,0.04);
+      border-left: 3px solid var(--basil);
+    }
+    .conv-avatar-unread {
+      box-shadow: 0 0 0 2px var(--basil);
+    }
+
+    .inbox-date-divider {
+      text-align: center; color: var(--muted); font-size: 0.76rem; font-weight: 750;
+      text-transform: uppercase; letter-spacing: 0.04em; padding: 8px 0;
+    }
+    .inbox-date-divider span { display: inline-block; padding: 4px 14px; border-radius: 999px; background: rgba(90,107,101,0.08); }
+
+    .inbox-input-bar { display: flex; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--line); background: var(--white); }
+    .inbox-input-bar input {
+      flex: 1; min-height: 48px; padding: 0 16px; border: 1px solid var(--line);
+      border-radius: 999px; background: #f9f8f3; font-size: 0.95rem; color: var(--ink); transition: border-color 0.2s;
+    }
+    .inbox-input-bar input:focus { border-color: var(--basil); outline: 3px solid rgba(46,107,79,0.16); }
+    .inbox-input-bar input::placeholder { color: #a3aea8; }
+    .inbox-send-btn {
+      flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%; background: var(--basil);
+      color: var(--white); display: grid; place-items: center; border: 0; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .inbox-send-btn:hover { background: #245a42; transform: translateY(-1px); }
+    .inbox-send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .inbox-send-btn svg { width: 20px; height: 20px; }
+
+    /* No conversation selected */
+    .inbox-no-chat {
+      flex: 1; display: flex; align-items: center; justify-content: center; text-align: center;
+      color: var(--muted); padding: 40px;
+    }
+    .inbox-no-chat svg { margin-bottom: 16px; color: var(--line); }
+    .inbox-no-chat h3 { color: var(--ink); margin-bottom: 6px; }
+    .inbox-no-chat p { font-size: 0.92rem; max-width: 32ch; }
+
+    .inbox-welcome {
+      padding: 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px;
+    }
+    .inbox-welcome span { font-size: 0.92rem; color: var(--muted); }
+    .inbox-welcome strong { color: var(--ink); }
+    .inbox-logout {
+      margin-left: auto; padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px;
+      background: var(--white); font-size: 0.8rem; font-weight: 800; cursor: pointer; color: var(--muted);
+    }
+    .inbox-logout:hover { border-color: var(--tomato); color: var(--tomato); }
+
+    @media (max-width: 768px) {
+      .inbox-sidebar { width: 100%; position: absolute; inset: 0; z-index: 10; background: var(--white); }
+      .inbox-layout { position: relative; }
+      .inbox-sidebar.hidden { display: none; }
+      .inbox-chat-header .back-to-list { display: inline-flex; }
+      .inbox-chat-panel { position: absolute; inset: 0; z-index: 11; background: var(--white); }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" aria-label="Primary">
+    <div class="header-left">
+      <a class="brand" href="index.html" aria-label="ChefTag home">
+        <img class="brand-logo" src="assets/cheftag-logo.png" alt="ChefTag" width="36" height="36">
+        <span>ChefTag</span>
+      </a>
+    </div>
+    <nav class="nav-links" aria-label="Site">
+      <a href="index.html">Home</a>
+      <a href="chef-signup.html" style="color:var(--basil);">Join as Chef</a>
+    </nav>
+  </header>
+
+  <main class="inbox-page">
+    <!-- Step 1: Chef Login -->
+    <div id="chefLogin" class="chef-login">
+      <div class="chef-login-box">
+        <div style="display:grid;width:56px;height:56px;place-items:center;border-radius:50%;overflow:hidden;margin:0 auto 16px;background:var(--basil);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <h2>Chef Inbox</h2>
+        <p class="login-sub">Enter your registered email and password to access your messages</p>
+        <p class="login-error" id="loginError"></p>
+        <div class="field">
+          <input type="email" id="chefEmailInput" placeholder="your@email.com" autocomplete="email">
+        </div>
+        <div class="field">
+          <input type="password" id="chefPasswordInput" placeholder="Password" autocomplete="current-password">
+        </div>
+        <button class="login-btn" id="chefLoginBtn" type="button">Open Inbox</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Inbox -->
+    <div id="inboxContainer" class="inbox-container">
+      <div class="inbox-layout">
+        <!-- Sidebar -->
+        <div class="inbox-sidebar" id="inboxSidebar">
+          <div class="inbox-welcome">
+            <span>Welcome, <strong id="chefWelcomeName">Chef</strong></span>
+            <button class="inbox-logout" id="inboxLogout" type="button">Logout</button>
+          </div>
+          <div class="inbox-sidebar-header">
+            <h2>Messages</h2>
+            <span class="inbox-count" id="inboxCount">0 conversations</span>
+          </div>
+          <ul class="inbox-list" id="inboxList"></ul>
+        </div>
+
+        <!-- No chat selected -->
+        <div class="inbox-no-chat" id="inboxNoChat">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <h3>Select a conversation</h3>
+          <p>Choose a chat from the sidebar to start messaging</p>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="inbox-chat-panel" id="inboxChatPanel">
+          <div class="inbox-chat-header">
+            <button class="back-to-list" id="backToList" type="button">&larr; Back</button>
+            <div class="inbox-chat-info">
+              <h3 id="inboxChatName">Client</h3>
+              <span id="inboxChatEmail">email@example.com</span>
+            </div>
+          </div>
+          <div class="inbox-messages" id="inboxMessages"></div>
+          <!-- Typing indicator -->
+          <div class="inbox-typing" id="inboxTyping">
+            <div class="inbox-typing-dots">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="inbox-input-bar">
+            <input type="text" id="inboxMessageInput" placeholder="Type your reply..." autocomplete="off">
+            <button class="inbox-send-btn" id="inboxSendBtn" type="button" aria-label="Send reply">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="auth-check.js"></script>
+  <script src="chef-inbox.js"></script>
+</body>
+</html>

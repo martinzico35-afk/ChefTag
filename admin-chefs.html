@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin | ChefTag</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" >
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .admin-header h1 {
+      max-width: 20ch;
+      font-size: 2rem;
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 28px;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 0;
+    }
+
+    .admin-tab {
+      padding: 10px 20px;
+      border: 0;
+      background: none;
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .admin-tab:hover {
+      color: var(--ink);
+    }
+
+    .admin-tab.active {
+      color: var(--ink);
+      border-bottom-color: var(--basil);
+    }
+
+    .admin-panel {
+      display: none;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      border-radius: 8px;
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .stat-card .stat-num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--basil);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-card .stat-label {
+      font-size: 0.82rem;
+      font-weight: 750;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .admin-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .admin-table th {
+      background: #f4f2eb;
+      font-weight: 850;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+
+    .admin-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .admin-table .chef-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-table .chef-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #e8e3d6;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 850;
+    }
+
+    .badge-pending {
+      background: rgba(244, 185, 66, 0.2);
+      color: #6d4b0d;
+    }
+
+    .badge-approved {
+      background: rgba(46, 107, 79, 0.15);
+      color: var(--basil);
+    }
+
+    .badge-rejected {
+      background: rgba(232, 93, 61, 0.12);
+      color: var(--tomato);
+    }
+
+    .badge-verified {
+      background: rgba(46, 107, 79, 0.15);
+      color: var(--basil);
+    }
+
+    .action-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .action-btn.approve {
+      background: var(--basil);
+      color: var(--white);
+      border: 0;
+    }
+
+    .action-btn.verify {
+      background: var(--saffron);
+      color: var(--ink);
+      border: 0;
+    }
+
+    .action-btn.reject {
+      background: none;
+      border: 1px solid var(--tomato);
+      color: var(--tomato);
+    }
+
+    .action-btn.delete {
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .action-btn + .action-btn {
+      margin-left: 6px;
+    }
+
+    .actions-cell {
+      white-space: nowrap;
+    }
+
+    /* Reviews panel */
+    .review-card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      background: var(--white);
+    }
+
+    .review-card .review-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .review-card .review-client {
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .review-card .review-chef-name {
+      font-weight: 700;
+      color: var(--basil);
+      font-size: 0.85rem;
+    }
+
+    .review-card .review-stars {
+      color: var(--saffron);
+      font-weight: 900;
+    }
+
+    .review-card .review-comment {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .review-card .review-date {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-top: 8px;
+    }
+
+    /* Auth gate */
+    .auth-gate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+    }
+
+    .auth-gate .auth-box {
+      max-width: 380px;
+      width: 100%;
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .auth-gate h2 {
+      margin-bottom: 6px;
+    }
+
+    .auth-gate .auth-sub {
+      color: var(--muted);
+      margin-bottom: 20px;
+      font-size: 0.92rem;
+    }
+
+    .auth-gate input {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+    }
+
+    .auth-gate input:focus {
+      border-color: var(--basil);
+      outline: 3px solid rgba(46, 107, 79, 0.16);
+    }
+
+    .auth-gate .auth-btn {
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--white);
+      font-weight: 900;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .auth-gate .auth-btn:hover {
+      background: var(--basil);
+    }
+
+    .auth-gate .auth-error {
+      color: var(--tomato);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    .logout-btn {
+      padding: 8px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      border-color: var(--tomato);
+      color: var(--tomato);
+    }
+
+    .empty-admin {
+      padding: 40px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+    }
+
+    @media (max-width: 640px) {
+      .admin-wrapper { padding: 24px 16px 60px; }
+      .admin-header h1 { font-size: 1.6rem; }
+      .admin-tabs { overflow-x: auto; }
+      .actions-cell { white-space: normal; }
+      .action-btn + .action-btn { margin-left: 4px; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Auth Gate -->
+  <div class="auth-gate" id="authGate">
+    <div class="auth-box">
+      <span style="display:grid;width:52px;height:52px;place-items:center;border-radius:10px;overflow:hidden;margin:0 auto 16px;"><img src="assets/cheftag-logo.png" alt="" width="52" height="52"></span>
+      <h2>Admin Portal</h2>
+      <p class="auth-sub">Enter your Supabase Service Role Key to connect.</p>
+      <p class="auth-error" id="authError">Invalid key or connection failed. Try again.</p>
+      <input type="password" id="adminPassword" placeholder="service_role key" autocomplete="off">
+      <button class="auth-btn" id="authBtn" type="button">Unlock</button>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard (hidden until auth) -->
+  <div id="adminDashboard" style="display:none;">
+    <header class="site-header">
+      <div class="header-left">
+        <a class="brand" href="index.html">
+          <img class="brand-logo" src="assets/cheftag-logo.png" alt="ChefTag" width="36" height="36">
+          <span>ChefTag Admin</span>
+        </a>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <a href="index.html" style="font-weight:800;font-size:0.88rem;color:var(--muted);">View Site</a>
+        <button class="logout-btn" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-wrapper">
+      <div class="admin-header">
+        <div>
+          <p class="eyebrow">Dashboard</p>
+          <h1>Chef Management</h1>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="admin-stats" id="adminStats">
+        <div class="stat-card"><div class="stat-num" id="statTotal">-</div><div class="stat-label">Total Chefs</div></div>
+        <div class="stat-card"><div class="stat-num" id="statPending">-</div><div class="stat-label">Pending Review</div></div>
+        <div class="stat-card"><div class="stat-num" id="statApproved">-</div><div class="stat-label">Approved</div></div>
+        <div class="stat-card"><div class="stat-num" id="statVerified">-</div><div class="stat-label">Verified</div></div>
+        <div class="stat-card"><div class="stat-num" id="statReviews">-</div><div class="stat-label">Reviews</div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="pending">Pending</button>
+        <button class="admin-tab" data-tab="approved">Approved</button>
+        <button class="admin-tab" data-tab="all">All Chefs</button>
+        <button class="admin-tab" data-tab="reviews">Reviews</button>
+      </div>
+
+      <!-- Pending Panel -->
+      <div class="admin-panel active" id="panel-pending">
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Chef</th><th>Location</th><th>Cuisines</th><th>Rate</th><th>Applied</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="pendingBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Approved Panel -->
+      <div class="admin-panel" id="panel-approved">
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Chef</th><th>Location</th><th>Rating</th><th>Verified</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="approvedBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- All Panel -->
+      <div class="admin-panel" id="panel-all">
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Chef</th><th>Email</th><th>Location</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="allBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Reviews Panel -->
+      <div class="admin-panel" id="panel-reviews">
+        <div id="reviewsList"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="admin-chefs.js"></script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign Up / Sign In | ChefTag</title>
+  <meta name="description" content="Create your ChefTag account or sign in to chat with chefs and manage bookings.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" >
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .auth-page {
+      display: flex; align-items: center; justify-content: center;
+      min-height: calc(100vh - 71px); padding: 24px;
+    }
+    .auth-box {
+      max-width: 440px; width: 100%;
+    }
+    .auth-logo {
+      text-align: center; margin-bottom: 32px;
+    }
+    .auth-logo .brand {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 1.3rem; font-weight: 850;
+    }
+    .auth-card {
+      padding: 36px; border: 1px solid var(--line); border-radius: 12px;
+      background: var(--white); box-shadow: var(--shadow);
+    }
+    .auth-tabs {
+      display: flex; gap: 0; margin-bottom: 28px; border-bottom: 2px solid var(--line);
+    }
+    .auth-tab {
+      flex: 1; padding: 10px; border: 0; background: none;
+      font-weight: 800; font-size: 0.95rem; color: var(--muted);
+      cursor: pointer; border-bottom: 3px solid transparent;
+      margin-bottom: -2px; transition: color 0.2s, border-color 0.2s;
+    }
+    .auth-tab:hover { color: var(--ink); }
+    .auth-tab.active { color: var(--ink); border-bottom-color: var(--basil); }
+    .auth-panel { display: none; }
+    .auth-panel.active { display: block; }
+    .auth-field {
+      display: grid; gap: 6px; margin-bottom: 16px;
+      color: #33413c; font-size: 0.82rem; font-weight: 850;
+      text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .auth-field input {
+      width: 100%; min-height: 50px; padding: 0 16px;
+      border: 1px solid var(--line); border-radius: 10px;
+      background: #faf9f5; color: var(--ink); font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .auth-field input:focus {
+      border-color: var(--basil); outline: 3px solid rgba(46,107,79,0.16);
+      background: var(--white); box-shadow: 0 4px 16px rgba(26,37,33,0.06);
+    }
+    .auth-field input::placeholder { color: #a3aea8; font-weight: 400; text-transform: none; letter-spacing: 0; }
+    .auth-submit {
+      width: 100%; padding: 14px; border: 0; border-radius: 10px;
+      background: var(--ink); color: var(--white); font-weight: 900;
+      font-size: 1rem; cursor: pointer; transition: background 0.2s, transform 0.15s;
+      margin-top: 4px;
+    }
+    .auth-submit:hover { background: var(--basil); transform: translateY(-1px); }
+    .auth-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .auth-status {
+      padding: 12px 16px; border-radius: 8px; font-weight: 700;
+      font-size: 0.88rem; margin-bottom: 20px; display: none;
+    }
+    .auth-status.error { display: block; background: rgba(232,93,61,0.1); border: 1px solid var(--tomato); color: var(--tomato); }
+    .auth-status.success { display: block; background: rgba(46,107,79,0.1); border: 1px solid var(--basil); color: var(--basil); }
+    .auth-divider {
+      display: flex; align-items: center; gap: 14px; margin: 24px 0;
+      color: var(--muted); font-size: 0.82rem; font-weight: 700;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ""; flex: 1; height: 1px; background: var(--line);
+    }
+    .google-btn {
+      width: 100%; padding: 13px; border: 1px solid var(--line); border-radius: 10px;
+      background: var(--white); color: var(--ink); font-weight: 800;
+      font-size: 0.92rem; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 10px; transition: background 0.2s, border-color 0.2s;
+    }
+    .google-btn:hover { background: #f9f8f3; border-color: var(--muted); }
+    .google-btn svg { flex-shrink: 0; }
+    .auth-footer {
+      text-align: center; margin-top: 20px; color: var(--muted); font-size: 0.88rem;
+    }
+    .auth-footer a { color: var(--basil); font-weight: 800; text-decoration: underline; }
+    .auth-hint {
+      text-align: center; margin-top: 24px; padding-top: 20px;
+      border-top: 1px solid var(--line); color: var(--muted); font-size: 0.84rem;
+    }
+    .auth-hint a { color: var(--basil); font-weight: 800; }
+    .name-only-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .auth-card { padding: 24px; }
+      .name-only-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" aria-label="Primary">
+    <div class="header-left">
+      <a class="brand" href="index.html" aria-label="ChefTag home">
+        <img class="brand-logo" src="assets/cheftag-logo.png" alt="ChefTag" width="36" height="36">
+        <span>ChefTag</span>
+      </a>
+    </div>
+    <nav class="nav-links" aria-label="Site">
+      <a href="index.html">Chefs</a>
+    </nav>
+  </header>
+
+  <main class="auth-page">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <a class="brand" href="index.html">
+          <img class="brand-logo" src="assets/cheftag-logo.png" alt="ChefTag" width="40" height="40">
+          <span>ChefTag</span>
+        </a>
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-status" id="authStatus"></div>
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-panel="signup">Sign Up</button>
+          <button class="auth-tab" data-panel="signin">Sign In</button>
+        </div>
+
+        <!-- Sign Up Panel -->
+        <div class="auth-panel active" id="panel-signup">
+          <form id="signupForm" novalidate>
+            <div class="name-only-row">
+              <div class="auth-field">
+                <label for="suName">First Name</label>
+                <input type="text" id="suName" placeholder="Your first name" autocomplete="given-name" required>
+              </div>
+              <div class="auth-field">
+                <label for="suLastName">Last Name</label>
+                <input type="text" id="suLastName" placeholder="Your last name" autocomplete="family-name">
+              </div>
+            </div>
+            <div class="auth-field">
+              <label for="suEmail">Email Address</label>
+              <input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email" required>
+            </div>
+            <div class="auth-field">
+              <label for="suPassword">Password</label>
+              <input type="password" id="suPassword" placeholder="Min 6 characters" autocomplete="new-password" required minlength="6">
+            </div>
+            <button type="submit" class="auth-submit" id="signupBtn">Create Account</button>
+          </form>
+
+          <div class="auth-divider">or</div>
+          <button class="google-btn" id="googleSignupBtn" type="button">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Continue with Google
+          </button>
+        </div>
+
+        <!-- Sign In Panel -->
+        <div class="auth-panel" id="panel-signin">
+          <form id="signinForm" novalidate>
+            <div class="auth-field">
+              <label for="siEmail">Email Address</label>
+              <input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email" required>
+            </div>
+            <div class="auth-field">
+              <label for="siPassword">Password</label>
+              <input type="password" id="siPassword" placeholder="Your password" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="auth-submit" id="signinBtn">Sign In</button>
+          </form>
+
+          <div class="auth-divider">or</div>
+          <button class="google-btn" id="googleSigninBtn" type="button">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Continue with Google
+          </button>
+          <p style="text-align:center;margin-top:14px;"><a href="#" id="forgotLink" style="color:var(--muted);font-size:0.84rem;font-weight:700;">Forgot password?</a></p>
+        </div>
+      </div>
+
+      <p class="auth-hint">
+        Are you a chef? <a href="chef-signup.html">Apply to join ChefTag</a>
+      </p>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>

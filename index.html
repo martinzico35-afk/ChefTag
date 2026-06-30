@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ChefTag | Book a Private Chef</title>
+    <meta name="description" content="ChefTag helps guests find and book private chefs for dinners, brunches, events, and tasting menus in Lagos, Abuja, and Port Harcourt.">
+    <meta property="og:title" content="ChefTag | Book a Private Chef">
+    <meta property="og:description" content="Match with vetted private chefs by event style, cuisine, location, and guest count.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://martinzico35-afk.github.io/ChefTag/">
+    <meta property="og:image" content="https://martinzico35-afk.github.io/ChefTag/assets/booking-hero.svg">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="alternate icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  </head>
+  <body>
+    <!-- Mobile Nav Backdrop -->
+    <div class="nav-backdrop" id="navBackdrop"></div>
+
+    <!-- Mobile Nav Drawer -->
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+      <a href="#chefs">Chefs</a>
+      <a href="#packages">Packages</a>
+      <a href="chef-inbox.html">Chef Inbox</a>
+      <a href="chef-signup.html" style="color:var(--basil);">Join as Chef</a>
+      <div id="mobileNavAuthArea"></div>
+    </nav>
+
+    <header class="site-header" aria-label="Primary">
+      <div class="header-left">
+        <button class="hamburger" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <a class="brand" href="#top" aria-label="ChefTag home">
+          <img class="brand-logo" src="assets/cheftag-logo.png" alt="ChefTag" width="36" height="36">
+          <span>ChefTag</span>
+        </a>
+      </div>
+      <nav class="nav-links" aria-label="Site">
+        <a href="#chefs">Chefs</a>
+        <a href="#packages">Packages</a>
+        <div id="navAuthArea"></div>
+      </nav>
+    </header>
+
+    <main id="top" class="workspace">
+      <aside class="control-panel" aria-label="Chef booking filters">
+        <p class="eyebrow">Private Chef Booking</p>
+        <h1>Find the chef for your cravings.</h1>
+
+        <section id="packages" class="package-strip" aria-label="Booking packages">
+          <article>
+            <span>01</span>
+            <h3>Private dinner</h3>
+            <p>Intimate multi-course Nigerian feasts in the comfort of your home. Perfect for date nights, birthdays, and special celebrations. Savour bold flavours of peppered jollof, grilled suya, seafood okro, or pounded yam with egusi — beautifully plated with authentic Naija spice.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Event</h3>
+            <p>Chef-led catering that brings owambe energy to your parties. From corporate dinners and bridal showers to naming ceremonies and launches. Enjoy small chops, signature jollof, soups, grilled fish, and assorted meats that keep your guests coming back for more.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Meal prep</h3>
+            <p>Weekly Nigerian meals planned, cooked, packed, and tagged to your taste. From jollof rice with turkey to eba &amp; ogbono, or light healthy options — fresh, delicious, and ready when you need them. No stress, just proper Naija comfort food.</p>
+          </article>
+        </section>
+      </aside>
+
+      <section class="booking-workbench" aria-label="Chef booking">
+        <section class="feature-band" aria-label="ChefTag booking board">
+          <div class="feature-bg-image" role="img" aria-label="Private chef preparing an elegant multi-course meal"></div>
+          <div class="feature-copy">
+            <p class="eyebrow">ChefTag</p>
+            <h2>Your table. Our chefs.<br>Unforgettable flavours.</h2>
+            <p class="feature-lede">From sizzling jollof to flame-kissed grills and hand-rolled pasta &mdash; book vetted private chefs who turn every meal into an experience.</p>
+            <div class="feature-stats" aria-label="Booking summary">
+              <span><strong id="matchCountHero">5</strong> chefs</span>
+            </div>
+          </div>
+        </section>
+
+        <div id="chefs" class="toolbar">
+          <div>
+            <p class="eyebrow">Available Chefs</p>
+            <h2 id="resultHeading">Best Matches</h2>
+          </div>
+          <label class="select-label" for="sortSelect">
+            Sort
+            <select id="sortSelect">
+              <option value="match">Best match</option>
+              <option value="rate">Lowest rate</option>
+              <option value="rating">Top rated</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="chef-grid" id="chefGrid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a class="brand" href="#top" aria-label="ChefTag home">
+            <img class="brand-logo" src="assets/cheftag-logo.png" alt="ChefTag" width="36" height="36">
+            <span>ChefTag</span>
+          </a>
+          <p>Matching guests with private chefs across Nigeria.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <a href="#chefs">Our Chefs</a>
+          <a href="chef-signup.html" style="color:var(--basil);font-weight:800;">Join as Chef</a>
+        </div>
+        <div class="footer-contact">
+          <h4>Contact</h4>
+          <p>bookings@cheftag.com</p>
+          <p>Lagos &bull; Abuja &bull; Port Harcourt</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 ChefTag. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="supabase-client.js"></script>
+    <script src="auth-check.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
