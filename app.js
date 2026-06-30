@@ -276,6 +276,79 @@ if (mobileNav) {
   });
 }
 
+// ---- Search Overlay ----
+var searchToggle = document.getElementById("searchToggle");
+var searchOverlay = document.getElementById("searchOverlay");
+var searchClose = document.getElementById("searchClose");
+var searchInput = document.getElementById("searchInput");
+var searchResults = document.getElementById("searchResults");
+
+function openSearch() {
+  searchOverlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+  setTimeout(function () { searchInput.focus(); }, 100);
+}
+
+function closeSearch() {
+  searchOverlay.classList.remove("open");
+  document.body.style.overflow = "";
+  searchInput.value = "";
+  searchResults.innerHTML = '<p class="search-hint">Type to find chefs by name, location, or cuisine</p>';
+}
+
+if (searchToggle) searchToggle.addEventListener("click", openSearch);
+if (searchClose) searchClose.addEventListener("click", closeSearch);
+if (searchOverlay) {
+  searchOverlay.addEventListener("click", function (e) {
+    if (e.target === searchOverlay) closeSearch();
+  });
+}
+
+function filterChefs(query) {
+  if (!query.trim()) {
+    searchResults.innerHTML = '<p class="search-hint">Type to find chefs by name, location, or cuisine</p>';
+    return;
+  }
+  var q = query.toLowerCase().trim();
+  var matches = chefs.filter(function (chef) {
+    return chef.name.toLowerCase().indexOf(q) !== -1 ||
+           chef.location.toLowerCase().indexOf(q) !== -1 ||
+           chef.cuisines.some(function (c) { return c.toLowerCase().indexOf(q) !== -1; }) ||
+           chef.specialty.toLowerCase().indexOf(q) !== -1;
+  });
+
+  if (!matches.length) {
+    searchResults.innerHTML = '<p class="search-no-results">No chefs found for "' + escapeHtml(query) + '"</p>';
+    return;
+  }
+
+  var html = "";
+  matches.forEach(function (chef) {
+    var chatHref = 'chat.html?chef_id=' + encodeURIComponent(chef.id) +
+      '&chef_name=' + encodeURIComponent(chef.name) +
+      '&chef_location=' + encodeURIComponent(chef.location) +
+      '&chef_image=' + encodeURIComponent(chef.image_url);
+    html += '<div class="search-result-item" onclick="window.location.href=\'' + chatHref + '\'">' +
+      '<img src="' + escapeHtml(chef.image_url) + '" alt="" onerror="this.src=\'https://sfile.chatglm.cn/images-ppt/86026829c333.jpg\'">' +
+      '<div class="search-result-info">' +
+        '<strong>' + escapeHtml(chef.name) + '</strong>' +
+        '<span>' + escapeHtml(chef.location) + ' &bull; ' + chef.cuisines.slice(0, 3).join(", ") + '</span>' +
+      '</div>' +
+      '<a href="' + chatHref + '" class="search-result-chat">Chat</a>' +
+    '</div>';
+  });
+  searchResults.innerHTML = html;
+}
+
+if (searchInput) {
+  searchInput.addEventListener("input", function () {
+    filterChefs(searchInput.value);
+  });
+  searchInput.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeSearch();
+  });
+}
+
 // ---- Event Listeners ----
 function attachListeners() {
   chefGrid.addEventListener("click", function (event) {
