@@ -18,8 +18,8 @@
 // ============================================================
 // >>> REPLACE THESE TWO VALUES WITH YOUR SUPABASE CREDENTIALS
 // ============================================================
-var SUPABASE_URL = "https://knvdfsgzsjfdufzrdkwf.supabase.co";
-var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtudmRmc2d6c2pmZHVmenJka3dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0MTkyODEsImV4cCI6MjA5Nzk5NTI4MX0.o-5CYYNJZPVipJcX78y8FYkX6eArX4t_QFpGWv3ChXw";
+var SUPABASE_URL = "https://pddfxzxxjsawkhmpdozq.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkZGZ4enh4anNhd2tobXBkb3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MDk3NDQsImV4cCI6MjA5ODM4NTc0NH0.JBSk3RIYAp2_KjAoYwikUHaKKTDZA2pCn08mqa5AmWg";
 
 // Admin key — bypasses RLS (removed for security, supplied at admin portal login)
 var SUPABASE_SERVICE_KEY = "";
