@@ -22,7 +22,7 @@ var SUPABASE_URL = "https://pddfxzxxjsawkhmpdozq.supabase.co";
 var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkZGZ4enh4anNhd2tobXBkb3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MDk3NDQsImV4cCI6MjA5ODM4NTc0NH0.JBSk3RIYAp2_KjAoYwikUHaKKTDZA2pCn08mqa5AmWg";
 
 // Admin key — bypasses RLS (removed for security, supplied at admin portal login)
-var SUPABASE_SERVICE_KEY = "";
+var SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkZGZ4enh4anNhd2tobXBkb3pxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MjgwOTc0NCwiZXhwIjoyMDk4Mzg1NzQ0fQ.fJBvzbe6UEY3C5WiRF-az0bVBEV82G8seMOf8Qtn09g";
 // ============================================================
 
 /**

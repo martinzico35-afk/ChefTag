@@ -24,7 +24,11 @@
   var allReviews = [];
 
   // ---- Auth Gate ----
-  if (sessionStorage.getItem("cheftag_admin_key")) {
+  // Auto-login if service key is configured in supabase-client.js
+  if (typeof SUPABASE_SERVICE_KEY !== "undefined" && SUPABASE_SERVICE_KEY) {
+    sessionStorage.setItem("cheftag_admin_key", SUPABASE_SERVICE_KEY);
+    showDashboard();
+  } else if (sessionStorage.getItem("cheftag_admin_key")) {
     showDashboard();
   }
 
