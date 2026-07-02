@@ -153,10 +153,31 @@
       rating: 0,
       capacity: 20,
       is_verified: false,
-      is_approved: false
+      is_approved: false,
+      image_url: "https://sfile.chatglm.cn/images-ppt/86026829c333.jpg"
     };
 
-    // 1. Sign up the user in Supabase Auth first, sending custom metadata role="chef"
+    // 1. Upload photo first if provided, so we have image_url before any insert
+    function prepareAndSubmit(userId) {
+      chefData.id = userId;
+      if (!uploadedFile) {
+        submitToSupabase(sb, chefData);
+        return;
+      }
+      console.log("[ChefTag Signup] Uploading photo to Supabase Storage...");
+      uploadPhoto(sb, name)
+        .then(function (url) {
+          console.log("[ChefTag Signup] Photo uploaded:", url);
+          chefData.image_url = url;
+          submitToSupabase(sb, chefData);
+        })
+        .catch(function (err) {
+          console.error("[ChefTag Signup] Photo upload failed:", err);
+          submitToSupabase(sb, chefData);
+        });
+    }
+
+    // 2. Try signing up in Supabase Auth
     sb.auth.signUp({
       email: email,
       password: password,
@@ -165,32 +186,22 @@
       }
     }).then(function (authResult) {
       if (authResult.error) {
+        // If rate-limited, still insert chef record with generated UUID
+        var errMsg = (authResult.error.message || "").toLowerCase();
+        if (errMsg.indexOf("rate limit") !== -1 || errMsg.indexOf("rate_limit") !== -1) {
+          console.warn("[ChefTag Signup] Auth rate-limited, inserting chef directly:", errMsg);
+          var tempId = crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+          });
+          prepareAndSubmit(tempId);
+          showStatus("info", "Email rate limit hit — your application has been saved and our team will contact you.");
+          return;
+        }
         throw new Error(authResult.error.message || "Auth registration failed.");
       }
       var userId = authResult.data.user.id;
-      chefData.id = userId; // set chef's UUID to be their Auth user ID!
-
-      // 2. Upload photo and submit chef profile
-      if (uploadedFile) {
-        console.log("[ChefTag Signup] Uploading photo to Supabase Storage...");
-        uploadPhoto(sb, name)
-          .then(function (url) {
-            console.log("[ChefTag Signup] Photo uploaded:", url);
-            chefData.image_url = url;
-            submitToSupabase(sb, chefData);
-          })
-          .catch(function (err) {
-            console.error("[ChefTag Signup] Photo upload failed:", err);
-            // Photo failed — submit anyway with default image
-            console.log("[ChefTag Signup] Falling back to default image.");
-            chefData.image_url = "https://sfile.chatglm.cn/images-ppt/86026829c333.jpg";
-            submitToSupabase(sb, chefData);
-          });
-      } else {
-        console.log("[ChefTag Signup] No photo uploaded, using default image.");
-        chefData.image_url = "https://sfile.chatglm.cn/images-ppt/86026829c333.jpg";
-        submitToSupabase(sb, chefData);
-      }
+      prepareAndSubmit(userId);
     }).catch(function (err) {
       console.error("[ChefTag Signup] Auth/Signup error:", err);
       showStatus("error", err.message || "Sign-up failed.");
