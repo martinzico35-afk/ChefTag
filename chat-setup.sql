@@ -84,6 +84,22 @@ CREATE POLICY "Allow members to update messages" ON messages
     )
   );
 
+-- Allow anonymous clients to start conversations
+CREATE POLICY "Anyone can create a conversation" ON conversations
+  FOR INSERT WITH CHECK (true);
+
+-- Allow anonymous clients to send messages to existing conversations  
+CREATE POLICY "Anyone can send messages to existing conversations" ON messages
+  FOR INSERT WITH CHECK (true);
+
+-- Allow anonymous clients to read conversations (needed for chat lookup)
+CREATE POLICY "Anyone can read conversations" ON conversations
+  FOR SELECT USING (true);
+
+-- Allow anonymous clients to read messages (needed for chat lookup)
+CREATE POLICY "Anyone can read messages" ON messages
+  FOR SELECT USING (true);
+
 -- 6. Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_conversations_chef_id ON conversations(chef_id);
 CREATE INDEX IF NOT EXISTS idx_conversations_client_email ON conversations(client_email);
